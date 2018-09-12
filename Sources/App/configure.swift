@@ -30,6 +30,15 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     )
     middlewares.use(cors)
     middlewares.use(ErrorMiddleware.self) // Catches errors and converts to HTTP response
+    
+    
+    services.register { container -> SecretMiddleware in
+        guard let secret = Environment.get("SECRET") else {
+            fatalError("Please export SECRET")
+        }
+        return .init(secret: secret)
+    }
+    
     services.register(middlewares)
 
     // Configure a SQLite database

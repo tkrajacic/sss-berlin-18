@@ -21,10 +21,13 @@ public func routes(_ router: Router) throws {
     let todoController = TodoController()
     let todos = router.grouped("todos")
     let todo = todos.grouped(Todo.parameter)
+    let secureTodos = todos.grouped(SecretMiddleware.self)
+    let secureTodo = todo.grouped(SecretMiddleware.self)
+    
     todos.get(use: todoController.index)
     todo.get(use: todoController.view)
-    todos.post(use: todoController.create)
+    secureTodos.post(use: todoController.create)
     todo.patch(use: todoController.update)
     todo.delete(use: todoController.delete)
-    todos.delete(use: todoController.clear)
+    secureTodos.delete(use: todoController.clear)
 }
